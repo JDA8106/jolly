@@ -8,14 +8,37 @@ import io.vavr.control.Try;
 import java.time.Duration;
 import java.util.function.Supplier;
 
+/**
+ * The RetryPolicy class executes methods and re-attempts execution when
+ * method fails for a certain number of attempts.
+ */
 public class RetryPolicy {
+    private int attempts;
+    private int duration;
 
-    public static <T> T exec(int attempts, int duration, Supplier<T> function) {
+    /**
+     * Initializes RetryPolicy with max attempts and wait duration between attempts.
+     * @param attempts max number of attempts to try before failing
+     * @param duration wait duration between attempts
+     */
+    public RetryPolicy(int attempts, int duration) {
+        this.attempts = attempts;
+        this.duration = duration;
+    }
+
+
+    /**
+     * Executes method with the given parameters (attempts, duration)
+     * @param function function to be executed with the RetryPolicy
+     * @param <T>
+     * @return output of method on success or exception on failure
+     */
+    public <T> T exec(Supplier<T> function) {
         CircuitBreaker circuitBreaker = CircuitBreaker.ofDefaults("backendName");
 
         RetryConfig config = RetryConfig.custom()
-                .maxAttempts(attempts)
-                .waitDuration(Duration.ofMillis(duration))
+                .maxAttempts(this.attempts)
+                .waitDuration(Duration.ofMillis(this.duration))
                 .build();
         Retry retry = Retry.of("backendName", config);
 
@@ -25,8 +48,8 @@ public class RetryPolicy {
         decoratedSupplier = Retry
                 .decorateSupplier(retry, decoratedSupplier);
 
-        // Execute the decorated supplier and recover from any exception
-        T result = Try.ofSupplier(decoratedSupplier).get();
+        T result = Try.ofSupplier(decoratedSupplier)
+                .get();
 
         return result;
     }
