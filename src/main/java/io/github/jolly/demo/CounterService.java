@@ -12,6 +12,7 @@ public class CounterService implements BackendService {
             String bad = temp.toLowerCase();
             return "Bad";
         } else {
+            System.out.println("Working")
             counter++;
             return "Finally worked";
         }
@@ -24,6 +25,7 @@ public class CounterService implements BackendService {
             String bad = temp.toLowerCase();
             return "Bad";
         } else {
+            System.out.println("Working")
             counter++;
             return "Finally worked";
         }
