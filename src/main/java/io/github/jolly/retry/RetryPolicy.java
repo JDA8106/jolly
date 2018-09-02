@@ -6,6 +6,7 @@ import io.github.resilience4j.retry.RetryConfig;
 import io.vavr.control.Try;
 
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 /**
@@ -54,5 +55,7 @@ public class RetryPolicy {
         return result;
     }
 
-
+    public <T> CompletableFuture run(Supplier<T> function) {
+        return CompletableFuture.supplyAsync(() -> exec(function));
+    }
 }
