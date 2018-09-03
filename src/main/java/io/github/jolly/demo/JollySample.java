@@ -14,12 +14,12 @@ public class JollySample {
                 .build();
 
         System.out.println("Before Async");
-        CompletableFuture<String> result1 = pol.run(backendService::failForever);
+        CompletableFuture<String> result1 = pol.runAsync(backendService::failForever);
 
         System.out.println("After Async");
         try {
-            String result = pol.exec(backendService::doSomething);
-            //String result = pol.exec(backendService::failForever);
+            //String result = pol.exec(backendService::doSomething);
+            String result = pol.exec(backendService::failForever);
         } catch (Exception e) {
             System.out.println("Sync failed with: " + e.getMessage());
         }
@@ -44,13 +44,13 @@ public class JollySample {
 
 
 
-        String result = pol2.exec(backendService2::doSomething);
+        //String result = pol2.exec(backendService2::doSomething);
 
 
 
         System.out.println("dfsfd");
 
-        //String result = pol2.exec(backendService2::failForever);
+        String result = pol2.exec(backendService2::failForever);
 
 
 
