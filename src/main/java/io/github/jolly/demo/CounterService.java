@@ -5,7 +5,7 @@ public class CounterService implements BackendService {
     private static int counter = 0;
 
     public String doSomething() {
-        if (counter == 0) {
+        if (counter < 2) {
             counter++;
             String temp = null;
             System.out.println("Failed");

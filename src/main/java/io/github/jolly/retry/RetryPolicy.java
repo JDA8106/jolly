@@ -7,7 +7,6 @@ import io.github.resilience4j.retry.RetryConfig;
 import io.vavr.control.Try;
 
 import java.time.Duration;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 /**

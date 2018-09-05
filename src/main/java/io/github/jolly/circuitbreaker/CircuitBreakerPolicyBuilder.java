@@ -7,7 +7,7 @@ public class CircuitBreakerPolicyBuilder {
  * for method invocation with a CircuitBreakerPolicy.
  */
     private int rateThreshold = 100;
-    private int duration = 500;
+    private int duration = 1000;
     private int sizeRingBufferHalfOpen = 2;
     private int sizeRingBufferClosed = 2;
 

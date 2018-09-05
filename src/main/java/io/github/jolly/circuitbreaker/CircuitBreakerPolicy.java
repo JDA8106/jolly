@@ -2,18 +2,15 @@ package io.github.jolly.circuitbreaker;
 import io.github.jolly.policy.Policy;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerOpenException;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.vavr.control.Try;
 import java.time.Duration;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 public class CircuitBreakerPolicy extends Policy {
-
-    private int rateThreshold;
+    private CircuitBreaker circuitBreaker;
     private int duration;
-    private int sizeRingBufferHalfOpen;
-    private int sizeRingBufferClosed;
 
     /**
      * Initializes CircuitBreakerPolicy with max attempts and wait duration between attempts.
@@ -24,10 +21,17 @@ public class CircuitBreakerPolicy extends Policy {
      * @param sizeRingBufferClosed the size of the ring buffer when the CircuitBreaker is closed
      */
     public CircuitBreakerPolicy(int rateThreshold, int duration, int sizeRingBufferHalfOpen, int sizeRingBufferClosed) {
-        this.rateThreshold = rateThreshold;
+
         this.duration = duration;
-        this.sizeRingBufferHalfOpen = sizeRingBufferHalfOpen;
-        this.sizeRingBufferClosed = sizeRingBufferClosed;
+        CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
+                .failureRateThreshold(rateThreshold)
+                .waitDurationInOpenState(Duration.ofMillis(duration))
+                .ringBufferSizeInHalfOpenState(sizeRingBufferHalfOpen)
+                .ringBufferSizeInClosedState(sizeRingBufferClosed)
+                .build();
+
+        CircuitBreakerRegistry circuitBreakerRegistry = CircuitBreakerRegistry.of(circuitBreakerConfig);
+        this.circuitBreaker = circuitBreakerRegistry.circuitBreaker("default", circuitBreakerConfig);
     }
 
     /**
@@ -37,28 +41,15 @@ public class CircuitBreakerPolicy extends Policy {
      * @return output of method on success or exception on failure
      */
     public <T> T exec(Supplier<T> function) {
+        Supplier<T> decoratedSupplier = CircuitBreaker.decorateSupplier(this.circuitBreaker, function);
 
-        // Custom configuration for a CircuitBreaker with default values of ringBufferSizes
-        CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
-                .failureRateThreshold(rateThreshold)
-                .waitDurationInOpenState(Duration.ofMillis(duration))
-                .ringBufferSizeInHalfOpenState(sizeRingBufferHalfOpen)
-                .ringBufferSizeInClosedState(sizeRingBufferClosed)
-                .build();
+        System.out.println(circuitBreaker.getState());
 
-        CircuitBreakerRegistry circuitBreakerRegistry = CircuitBreakerRegistry.of(circuitBreakerConfig);
-
-        CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker("default", circuitBreakerConfig);
-
-        Supplier<T> decoratedSupplier = CircuitBreaker
-                .decorateSupplier(circuitBreaker, function);
-
-        decoratedSupplier = CircuitBreaker
-                .decorateSupplier(circuitBreaker, decoratedSupplier);
-
-        T result = Try.ofSupplier(decoratedSupplier)
-                .get();
-
-        return result;
+        Try<T> result = Try.ofSupplier(decoratedSupplier);
+        if (circuitBreaker.getState().equals(CircuitBreaker.State.OPEN)) {
+            throw new CircuitBreakerOpenException("Cannot execute method: must wait " + duration);
+        } else {
+            return result.get();
+        }
     }
 }
