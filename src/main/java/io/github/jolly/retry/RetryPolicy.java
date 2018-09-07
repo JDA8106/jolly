@@ -1,19 +1,19 @@
 package io.github.jolly.retry;
 
+import io.github.jolly.policy.Policy;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
 import io.vavr.control.Try;
 
 import java.time.Duration;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 /**
  * The RetryPolicy class executes methods and re-attempts execution when
  * method fails for a certain number of attempts.
  */
-public class RetryPolicy {
+public class RetryPolicy extends Policy {
     private int attempts;
     private int duration;
 
@@ -35,13 +35,13 @@ public class RetryPolicy {
      * @return output of method on success or exception on failure
      */
     public <T> T exec(Supplier<T> function) {
-        CircuitBreaker circuitBreaker = CircuitBreaker.ofDefaults("backendName");
+        CircuitBreaker circuitBreaker = CircuitBreaker.ofDefaults("default");
 
         RetryConfig config = RetryConfig.custom()
                 .maxAttempts(this.attempts)
                 .waitDuration(Duration.ofMillis(this.duration))
                 .build();
-        Retry retry = Retry.of("backendName", config);
+        Retry retry = Retry.of("default", config);
 
         Supplier<T> decoratedSupplier = CircuitBreaker
                 .decorateSupplier(circuitBreaker, function);
@@ -53,15 +53,5 @@ public class RetryPolicy {
                 .get();
 
         return result;
-    }
-
-    /**
-     * Executes method asynchronously with given parameters (attempts, duration)
-     * @param function function to be executed with the RetryPolicy
-     * @param <T>
-     * @return CompletableFuture of output of method on success or exception on failure
-     */
-    public <T> CompletableFuture runAsync(Supplier<T> function) {
-        return CompletableFuture.supplyAsync(() -> exec(function));
     }
 }
