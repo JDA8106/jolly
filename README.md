@@ -19,7 +19,7 @@ When a method is executed through the policy:
 When a method is executed through the policy:
 1. The `RetryPolicy` attempts the method passed in with .runAsync().
    - A Java future is returned that will contain the return value once the policy exits
-   - The policy will executive the same way as synchronous (refer to 1.1.1)
+   - The policy will execute the same way as synchronous (refer to 1.1.1)
 
 ### 1.2 Retry Usage
 #### 1.2.1 How to Build
