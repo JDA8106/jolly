@@ -14,6 +14,7 @@ When a method is executed through the policy:
    - If the method throws an exception, it:
      1. waits 500 milisecond by default (user configurable)
      2. tries again up to 3 times by default (user configurable).
+     3. If it fails everytime, it throws the last exception.
 #### 1.1.2 How Asynchronous Works
 When a method is executed through the policy:
 1. The `RetryPolicy` attempts the method passed in with .runAsync().
@@ -42,4 +43,8 @@ String result = pol.exec(backendService::doSomething);
 Then use your `RetryPolicy` to execute a `Supplier` with retries:
 ```java
 CompletableFuture<String> result = pol.runAsync(backendService::doSomething);
+```
+Later on, you can get the result of the `RetryPolicy` as follows:
+```java
+String actualResult = result.get()
 ```
