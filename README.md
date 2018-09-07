@@ -24,9 +24,13 @@ When a method is executed through the policy:
 #### 1.2.1 How to Build
 The code below builds a `RetryPolicy` with 3 attempts and a 500ms wait duration.
 ```java
+RetryPolicy pol = new RetryPolicyBuilder().build();
+```
+The code below builds a `RetryPolicy` with 5 attempts and a 1000ms wait duration.
+```java
 RetryPolicy pol = new RetryPolicyBuilder()
-                .attempts(3)
-                .waitDuration(500)
+                .attempts(5)
+                .waitDuration(1000)
                 .build();
 ```
 #### 1.2.2 How to Use Synchronous
