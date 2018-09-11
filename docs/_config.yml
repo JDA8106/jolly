@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 pygments: true
 permalink: /otter-pop/:year/:month/:day/:title
 markdown: rdiscount
@@ -6,6 +5,3 @@ exclude: ['.git']
 name: "Otter Pop"
 description: "The world's greated jekyll theme"
 url: http://tybenz.com/otter-pop
-=======
-theme: jekyll-theme-minimal
->>>>>>> 0734d54a66e02ae8bbe852adde9fecb8cb2cdfe5
