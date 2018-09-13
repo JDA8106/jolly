@@ -1,7 +1,11 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 name: Flex
 markdown: redcarpet
 pygments: true
+=======
+theme: jekyll-theme-minimal
+>>>>>>> 56cf294a836267f0cdbd411b477cb347e5298c22
 =======
 theme: jekyll-theme-minimal
 >>>>>>> 56cf294a836267f0cdbd411b477cb347e5298c22
