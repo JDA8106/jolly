@@ -12,7 +12,7 @@ When a method is executed through the policy:
 1. The `RetryPolicy` attempts the method passed in with .exec().
    - If the method executes successfully, the return value (if relevant) is returned and the policy exits.
    - If the method throws an exception, it:
-     1. waits 500 milisecond by default (user configurable)
+     1. waits 500 miliseconds by default (user configurable)
      2. tries again up to 3 times by default (user configurable).
      3. If it fails everytime, it throws the last exception.
 #### 1.1.2 How Asynchronous Works
@@ -45,6 +45,58 @@ Then use your `RetryPolicy` to execute a `Supplier` with retries:
 CompletableFuture<String> result = pol.runAsync(backendService::doSomething);
 ```
 Later on, you can get the result of the `RetryPolicy` as follows:
+```java
+String actualResult = result.get()
+```
+
+Circuit-breaker Pattern
+---
+### 1.1 How Circuit-breaker Works
+Circuit-breaker is a state machine of three states: open, closed, half-open. 
+#### 1.1.1 How Synchronous Works
+1. The circuit initially starts closed. When closed, the circuit-breaker executes methods placed through it, measuring the faults and successes.
+   - If the failures exceed a certain `sizeRingBufferClosed`, 2 times by default, (user configurable), the circuit will transition to open state.
+2. When opened, no methods will be executed.
+   - If a certain duration of time, 1000 miliseconds by default, (user configurable) has elapsed:
+      1. Circuit-breaker transitions to half-open state when method is passed through.
+      2. Circuit-breaker transitions to half-open if function is queried. 
+3. When half-open:
+   - Next function will be treated as trial, to determine the circuit's condition.
+      1. if function takes longer than `duration` to return, one additional attempt will occur per `duration`.
+      2. if this call throws a exception, the circuit transitions back to open, and remains open again for `duration`.
+      3. if the call succeeds, the circuit transitions back to closed.
+#### 1.1.2 How Asynchronous Works
+When a method is executed through the policy:
+1. The `CircuitBreakerPolicy` attempts the method passed in with .runAsync().
+   - A Java future is returned that will contain the return value once the policy exits
+   - The policy will execute the same way as synchronous (refer to 1.1.1)
+
+### 1.2 Circuit-breaker Usage
+#### 1.2.1 How to Build
+The code below builds a `CircuitBreakerPolicy` with `rateThreshold` 100%, a wait `duration` of 1000 ms, and ring buffer size of 2 for both half-open and closed states. 
+```java
+CircuitBreakerPolicy pol = new CircuitBreakerPolicyBuilder().build();
+```
+The code below builds a `CircuitBreakerPolicy` with `rateThreshold` 90%, a wait `duration` of 500 ms, and ring buffer size of 2 for half-open state and 1 for closed state. 
+```java
+CircuitBreakerPolicy pol = new CircuitBreakerPolicyBuilder()
+                          .rateThreshold(90)
+                          .duration(500)
+                          .sizeRingBufferHalfOpen(2)
+                          .sizeRingBufferClosed(1)
+                          .build();
+```
+#### 1.2.2 How to Use Synchronous
+Then use your `CircuitBreakerPolicy` to execute a `Supplier` with retries:
+```java
+String result = pol.exec(backendService::doSomething);
+```
+#### 1.2.3 How to Use Asynchronous
+Then use your `CircuitBreakerPolicy` to execute a `Supplier` with retries:
+```java
+CompletableFuture<String> result = pol.runAsync(backendService::doSomething);
+```
+Later on, you can get the result of the `CircuitBreakerPolicy` as follows:
 ```java
 String actualResult = result.get()
 ```
