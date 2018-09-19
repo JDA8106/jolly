@@ -2,12 +2,15 @@ package io.github.jolly.demo;
 
 import io.github.jolly.circuitbreaker.CircuitBreakerPolicy;
 import io.github.jolly.circuitbreaker.CircuitBreakerPolicyBuilder;
+import io.github.jolly.timeout.TimeoutPolicy;
+import io.github.jolly.timeout.TimeoutPolicyBuilder;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerOpenException;
 
 public class JollySample {
     public static void main(String[] args) throws InterruptedException {
 
-        testCircuitBreaker();
+        //testCircuitBreaker();
+        testTimeout();
 
 //        BackendService backendService = new CounterService();
 //        RetryPolicy pol = new RetryPolicyBuilder()
@@ -64,6 +67,38 @@ public class JollySample {
     public static void testCircuitBreaker() throws InterruptedException {
         BackendService backendService = new CounterService();
         CircuitBreakerPolicy pol = new CircuitBreakerPolicyBuilder().build();
+        try {
+            String result = pol.exec(backendService::doSomething);
+            System.out.println(result);
+        } catch(NullPointerException e) {
+            System.out.println("first");
+        }
+
+        try {
+            String result = pol.exec(backendService::doSomething);
+            System.out.println(result);
+        } catch(CircuitBreakerOpenException e) {
+            System.out.println("second");
+        }
+
+        Thread.sleep(1000);
+
+        String result = pol.exec(backendService::doSomething);
+        System.out.println(result);
+
+        result = pol.exec(backendService::doSomething);
+        System.out.println(result);
+
+        result = pol.exec(backendService::doSomething);
+        System.out.println(result);
+
+        result = pol.exec(backendService::doSomething);
+        System.out.println(result);
+    }
+
+    public static void testTimeout() throws InterruptedException {
+        BackendService backendService = new CounterService();
+        TimeoutPolicy pol = new TimeoutPolicyBuilder().build();
         try {
             String result = pol.exec(backendService::doSomething);
             System.out.println(result);
