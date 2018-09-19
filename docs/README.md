@@ -55,7 +55,8 @@ Circuit-breaker Pattern
 Circuit-breaker is a state machine of three states: open, closed, half-open. 
 #### 1.1.1 How Synchronous Works
 1. The circuit initially starts closed. When closed, the circuit-breaker executes methods placed through it, measuring the faults and successes.
-   - If the failures exceed a certain `sizeRingBufferClosed`, 2 times by default, (user configurable), the circuit will transition to open state.
+   - If the failures exceed a certain `sizeRingBufferClosed`, 2 times by default (user configurable), the circuit will transition to open state.
+   - NOTE: the libary has a `rateThreshold`, 100% by default (user configurable), which is the failure rate threshold in percentage above which the CircuitBreaker should trip open and start short circuiting calls
 2. When opened, no methods will be executed.
    - If a certain duration of time, 1000 miliseconds by default, (user configurable) has elapsed:
       1. Circuit-breaker transitions to half-open state when method is passed through.
