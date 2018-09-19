@@ -8,6 +8,7 @@ import io.vavr.control.Try;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
@@ -45,15 +46,18 @@ public class TimeoutPolicy extends Policy{
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-//        Supplier<Future<Integer>> futureSupplier = () -> executorService.submit(function);
-//
-//        Callable restrictedCall = TimeLimiter
-//                .decorateFutureSupplier(timeLimiter, futureSupplier);
-//
-//        Try<T> result = Try.of(restrictedCall.call)
-//                .onFailure(throwable -> LOG.info("A timeout possibly occurred."));
-//
-//        return result.get();
+        Supplier<CompletableFuture<T>> futureSupplier = () -> CompletableFuture.supplyAsync(() -> function.get());
+
+        Callable restrictedCall = TimeLimiter
+                .decorateFutureSupplier(timeLimiter, futureSupplier);
+
+        try {
+            T res = (T) restrictedCall.call();
+            return res;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 }
