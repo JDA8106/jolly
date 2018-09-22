@@ -2,12 +2,15 @@ package io.github.jolly.demo;
 
 import io.github.jolly.circuitbreaker.CircuitBreakerPolicy;
 import io.github.jolly.circuitbreaker.CircuitBreakerPolicyBuilder;
+import io.github.jolly.timeout.TimeoutPolicy;
+import io.github.jolly.timeout.TimeoutPolicyBuilder;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerOpenException;
 
 public class JollySample {
     public static void main(String[] args) throws InterruptedException {
 
-        testCircuitBreaker();
+        //testCircuitBreaker();
+        testTimeout();
 
 //        BackendService backendService = new CounterService();
 //        RetryPolicy pol = new RetryPolicyBuilder()
@@ -91,5 +94,16 @@ public class JollySample {
 
         result = pol.exec(backendService::doSomething);
         System.out.println(result);
+    }
+
+    public static void testTimeout() throws InterruptedException {
+        BackendService backendService = new CounterService();
+        TimeoutPolicy pol = new TimeoutPolicyBuilder().build();
+        try {
+            String result = pol.exec(backendService::goForever);
+            System.out.println(result);
+        } catch(Exception e) {
+            System.out.println("exception");
+        }
     }
 }
