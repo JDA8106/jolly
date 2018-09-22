@@ -100,31 +100,10 @@ public class JollySample {
         BackendService backendService = new CounterService();
         TimeoutPolicy pol = new TimeoutPolicyBuilder().build();
         try {
-            String result = pol.exec(backendService::doSomething);
+            String result = pol.exec(backendService::goForever);
             System.out.println(result);
-        } catch(NullPointerException e) {
-            System.out.println("first");
+        } catch(Exception e) {
+            System.out.println("exception");
         }
-
-        try {
-            String result = pol.exec(backendService::doSomething);
-            System.out.println(result);
-        } catch(CircuitBreakerOpenException e) {
-            System.out.println("second");
-        }
-
-        Thread.sleep(1000);
-
-        String result = pol.exec(backendService::doSomething);
-        System.out.println(result);
-
-        result = pol.exec(backendService::doSomething);
-        System.out.println(result);
-
-        result = pol.exec(backendService::doSomething);
-        System.out.println(result);
-
-        result = pol.exec(backendService::doSomething);
-        System.out.println(result);
     }
 }

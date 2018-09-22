@@ -6,7 +6,7 @@ package io.github.jolly.timeout;
  */
 public class TimeoutPolicyBuilder {
 
-    private int duration = 1000;
+    private int duration = 10000;
     private boolean cancelFuture = true;
 
     /**

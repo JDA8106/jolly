@@ -30,4 +30,10 @@ public class CounterService implements BackendService {
             return "Finally worked";
         }
     }
+
+    public String goForever() {
+        while (true) {
+            int i = 2;
+        }
+    }
 }

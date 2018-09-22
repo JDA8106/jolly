@@ -38,7 +38,7 @@ public class TimeoutPolicy extends Policy{
     public <T> T exec(Supplier<T> function) {
 
         TimeLimiterConfig config = TimeLimiterConfig.custom()
-                .timeoutDuration(Duration.ofSeconds(60))
+                .timeoutDuration(Duration.ofSeconds(10))
                 .cancelRunningFuture(true)
                 .build();
 
