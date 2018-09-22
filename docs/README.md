@@ -101,3 +101,48 @@ Later on, you can get the result of the `CircuitBreakerPolicy` as follows:
 ```java
 String actualResult = result.get()
 ```
+
+Timeout Pattern
+---
+### 1.1 How Timeout Works
+#### 1.1.1 How Synchronous Works
+When a method is executed through the policy:
+1. The `TimeoutPolicy` attempts the method passed in with .exec().
+   - If the method executes within the configured time, the return value (if relevant) is returned and the policy exits.
+   - If the method takes longer than the configured time:
+     1. the TimeoutPolicy throws an exception
+     2. the TimeoutPolicy attempts to cancel the supplied future (user configurable)
+
+#### 1.1.2 How Asynchronous Works
+When a method is executed through the policy:
+1. The `TimeoutPolicy` attempts the method passed in with .runAsync().
+   - A Java future is returned that will contain the return value once the policy exits
+   - The policy will execute the same way as synchronous (refer to 1.1.1)
+
+### 1.2 Timeout Usage
+#### 1.2.1 How to Build
+The code below builds a `TimeoutPolicy` with a time duration of 1 second and a ‘yes’ to attempting to cancel the future in case it an exception occurs
+```java
+TimeoutPolicy pol = new TimeoutPolicyBuilder().build();
+```
+The code below builds a `TimeoutPolicy` with a time duration of 60 seconds and a ‘no’ to attempting to cancel the future in case it an exception occurs.
+```java
+TimeoutPolicy pol = new TimeoutPolicyBuilder()
+                .duration(Duration.ofSeconds(60))
+                .cancelFuture(false)
+                .build();
+```
+#### 1.2.2 How to Use Synchronous
+Then use your `TimeoutPolicy` to execute a `Supplier` with retries:
+```java
+String result = pol.exec(backendService::doSomething);
+```
+#### 1.2.3 How to Use Asynchronous
+Then use your `TimeoutPolicy` to execute a `Supplier` with retries:
+```java
+CompletableFuture<String> result = pol.runAsync(backendService::doSomething);
+```
+Later on, you can get the result of the `TimeoutPolicy` as follows:
+```java
+String actualResult = result.get()
+```
