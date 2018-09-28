@@ -40,6 +40,7 @@ public class RetryPolicy extends Policy {
         RetryConfig config = RetryConfig.custom()
                 .maxAttempts(this.attempts)
                 .waitDuration(Duration.ofMillis(this.duration))
+                .retryOnException(throwable -> true)
                 .build();
         Retry retry = Retry.of("default", config);
 
