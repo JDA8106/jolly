@@ -38,6 +38,7 @@ class TestFunction {
         }
 
         if (sequence.get(index % sequence.size())) {
+            index++;
             return System.currentTimeMillis() - start;
         }
         else {

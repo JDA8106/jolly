@@ -45,7 +45,6 @@ public class RetryPolicyTest {
         TestFunction func = new TestFunction(Arrays.asList(false, false, true));
         long elapsed = policy.exec(func::func);
         assertFalse(elapsed < 20);
-        assertTrue(elapsed < 30);
     }
 
     @Test(expected = TestException.class)
@@ -78,7 +77,6 @@ public class RetryPolicyTest {
         CompletableFuture<Long> elapsed = policy.runAsync(func::func);
         TimeUnit.MILLISECONDS.sleep(22);
         assertFalse(elapsed.get() < 20);
-        assertTrue(elapsed.get() < 30);
     }
 
     @Test(expected = ExecutionException.class)
