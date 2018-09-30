@@ -15,6 +15,7 @@ When a method is executed through the policy:
      1. waits 500 miliseconds by default (user configurable)
      2. tries again up to 3 times by default (user configurable).
      3. If it fails everytime, it throws the last exception.
+
 #### 1.1.2 How Asynchronous Works
 When a method is executed through the policy:
 1. The `RetryPolicy` attempts the method passed in with .runAsync().
@@ -66,6 +67,7 @@ Circuit-breaker is a state machine of three states: open, closed, half-open.
       1. if function takes longer than `duration` to return, one additional attempt will occur per `duration`.
       2. if this call throws a exception, the circuit transitions back to open, and remains open again for `duration`.
       3. if the call succeeds, the circuit transitions back to closed.
+
 #### 1.1.2 How Asynchronous Works
 When a method is executed through the policy:
 1. The `CircuitBreakerPolicy` attempts the method passed in with .runAsync().
