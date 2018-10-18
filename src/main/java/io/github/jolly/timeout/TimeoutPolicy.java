@@ -3,23 +3,24 @@ package io.github.jolly.timeout;
 import io.github.jolly.policy.Policy;
 import io.github.resilience4j.timelimiter.TimeLimiter;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
-import io.vavr.concurrent.Future;
-import io.vavr.control.Try;
 
 import java.time.Duration;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.function.Supplier;
 
-public class TimeoutPolicy extends Policy{
+public class TimeoutPolicy extends Policy {
+
     private int duration;
     private boolean cancelFuture;
 
+    private static final ScheduledExecutorService schedulerExecutor =
+            Executors.newScheduledThreadPool(10);
+    private static final ExecutorService executorService =
+            Executors.newCachedThreadPool();
+
     /**
      * Initializes TimeoutPolicy with wait duration before timeout occurs and whether attempt is made to cancel future
-     * @param duration wait duration between attempts
+     * @param duration wait duration before function times out
      * @param cancelFuture If the timeout is reached and an exception is thrown upstream,
      *                    then an attempt will be made to cancel the future if cancelFuture is true.
      *
@@ -38,13 +39,11 @@ public class TimeoutPolicy extends Policy{
     public <T> T exec(Supplier<T> function) {
 
         TimeLimiterConfig config = TimeLimiterConfig.custom()
-                .timeoutDuration(Duration.ofSeconds(10))
-                .cancelRunningFuture(true)
+                .timeoutDuration(Duration.ofMillis(duration))
+                .cancelRunningFuture(cancelFuture)
                 .build();
 
         TimeLimiter timeLimiter = TimeLimiter.of(config);
-
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
 
         Supplier<CompletableFuture<T>> futureSupplier = () -> CompletableFuture.supplyAsync(() -> function.get());
 
@@ -59,5 +58,35 @@ public class TimeoutPolicy extends Policy{
         }
 
         return null;
+    }
+
+    public <T> CompletableFuture<T> runAsync(Supplier<T> function) {
+        return supplyAsync(() -> exec(function), this.duration, TimeUnit.MILLISECONDS, null);
+    }
+
+    private static <T> CompletableFuture<T> supplyAsync(
+            final Supplier<T> supplier, long timeoutValue, TimeUnit timeUnit,
+            T defaultValue) {
+
+        final CompletableFuture<T> cf = new CompletableFuture<>();
+
+        Future<?> future = executorService.submit(() -> {
+            try {
+                cf.complete(supplier.get());
+            } catch (Throwable ex) {
+                cf.completeExceptionally(ex);
+            }
+        });
+
+        //schedule watcher
+        schedulerExecutor.schedule(() -> {
+            if (!cf.isDone()) {
+                cf.complete(defaultValue);
+                future.cancel(true);
+            }
+
+        }, timeoutValue, timeUnit);
+
+        return cf;
     }
 }

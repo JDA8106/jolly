@@ -42,6 +42,7 @@ class TestFunction {
             return System.currentTimeMillis() - start;
         }
         else {
+            index++;
             throw new TestException("TestFunction failed on run " + Integer.toString(index));
         }
     }

@@ -6,61 +6,27 @@ import io.github.jolly.timeout.TimeoutPolicy;
 import io.github.jolly.timeout.TimeoutPolicyBuilder;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerOpenException;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 public class JollySample {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
 
         //testCircuitBreaker();
         testTimeout();
 
-//        BackendService backendService = new CounterService();
-//        RetryPolicy pol = new RetryPolicyBuilder()
-//                .attempts(3)
-//                .waitDuration(1000)
-//                .build();
-//
-//        System.out.println("Before Async");
-//        CompletableFuture<String> result1 = pol.runAsync(backendService::failForever);
-//
-//        System.out.println("After Async");
-//        try {
-//            //String result = pol.exec(backendService::doSomething);
-//            String result = pol.exec(backendService::failForever);
-//        } catch (Exception e) {
-//            System.out.println("Sync failed with: " + e.getMessage());
-//        }
-//        System.out.println("After Sync");
-//
-//        try {
-//            System.out.println(result1.get());
-//        } catch (Exception e) {
-//            System.out.println("Async failed with: " + e.getMessage());
-//        }
-//        System.out.println("After Async");
-//
-//        BackendService backendService2 = new CounterService();
-//
-//        RetryPolicy pol2 = new RetryPolicyBuilder()
-//
-//                .attempts(3)
-//
-//                .waitDuration(500)
-//
-//                .build();
-//
-//
-//
-//        //String result = pol2.exec(backendService2::doSomething);
-//
-//
-//
-//        System.out.println("dfsfd");
-//
-//        String result = pol2.exec(backendService2::failForever);
-//
-//
-//
-//        System.out.println(result);
+    }
 
+    public static void testTimeout() throws ExecutionException, InterruptedException {
+        BackendService backendService = new CounterService();
+        TimeoutPolicy pol = new TimeoutPolicyBuilder().build();
+
+        CompletableFuture<String> resFuture = pol.runAsync(backendService::goForever);
+
+        String result = pol.exec(backendService::alwaysWork);
+        System.out.println("Sync: " + result);
+
+        System.out.println("Async: " + resFuture.get());
 
     }
 
@@ -94,16 +60,5 @@ public class JollySample {
 
         result = pol.exec(backendService::doSomething);
         System.out.println(result);
-    }
-
-    public static void testTimeout() throws InterruptedException {
-        BackendService backendService = new CounterService();
-        TimeoutPolicy pol = new TimeoutPolicyBuilder().build();
-        try {
-            String result = pol.exec(backendService::goForever);
-            System.out.println(result);
-        } catch(Exception e) {
-            System.out.println("exception");
-        }
     }
 }

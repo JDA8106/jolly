@@ -12,6 +12,9 @@ import java.util.function.Supplier;
 /**
  * The RetryPolicy class executes methods and re-attempts execution when
  * method fails for a certain number of attempts.
+ *
+ * @author Anish Visaria
+ *
  */
 public class RetryPolicy extends Policy {
     private int attempts;

@@ -1,7 +1,5 @@
 package io.github.jolly.test;
 
-import junit.extensions.RepeatedTest;
-
 import org.junit.Test;
 
 import java.util.Arrays;
