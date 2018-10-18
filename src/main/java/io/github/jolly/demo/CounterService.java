@@ -32,8 +32,10 @@ public class CounterService implements BackendService {
     }
 
     public String goForever() {
-        while (true) {
-            int i = 2;
-        }
+        while (true);
+    }
+
+    public String alwaysWork() {
+        return "Hello";
     }
 }
