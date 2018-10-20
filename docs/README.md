@@ -148,3 +148,39 @@ Later on, you can get the result of the `TimeoutPolicy` as follows:
 ```java
 String actualResult = result.get()
 ```
+
+
+Cache Pattern
+---
+### 1.1 How Cache Works
+`CachePolicy` is an implementation of the cache-aside pattern. It provides results from the cache or a user specified function.
+`CachePolicy` uses Java's CacheManager to establish, configure and close Caches.
+
+#### 1.1.1 How Synchronous Works
+When .exec() method is executed through the policy:
+1. `CachePolicy` takes in a `cacheKey` through the method parameter.
+2. `CachePolicy` fetches result from a previously cached function specified by the user during initialization of the `CachePolicy`
+3. If the cache retrieval fails because of a cache miss or an error, `CachePolicy` handles the exception.
+
+### 1.2 Cache Usage
+#### 1.2.1 How to Build
+The code below builds a `CachePolicy` with a given function
+```java
+CachePolicy pol = new CachePolicy(function)
+```
+`CachePolicy` constructor does not have further parameters that users can specify, except the function of type `Supplier<V>`.
+```
+#### 1.2.2 How to Use Synchronous
+Then use your `CachePolicy` to execute a `Supplier` with retries:
+```java
+String result = pol.exec(backendService::doSomething);
+```
+#### 1.2.3 How to Use Asynchronous
+Then use your `CachePolicy` to execute a `Supplier` with retries:
+```java
+CompletableFuture<String> result = pol.runAsync(backendService::doSomething);
+```
+Later on, you can get the result of the `CachePolicy` as follows:
+```java
+String actualResult = result.get()
+```

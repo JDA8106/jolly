@@ -2,6 +2,7 @@ package io.github.jolly.cache;
 
 import io.github.resilience4j.cache.Cache;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -32,7 +33,7 @@ public class CachePolicy<K, V> {
 
     /**
      * Fetches result from cache or from the function, if unavailable.
-     * @param cacheKey input of function
+     * @param function input of function
      * @return Output of function for particular input
      */
     public V exec(Supplier<K> function) {
