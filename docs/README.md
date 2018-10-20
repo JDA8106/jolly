@@ -171,12 +171,12 @@ CachePolicy pol = new CachePolicy(function)
 `CachePolicy` constructor does not have further parameters that users can specify, except the function of type `Supplier<V>`.
 
 #### 1.2.2 How to Use Synchronous
-Then use your `CachePolicy` to execute a `Supplier` with retries:
+Then use your `CachePolicy` to execute a `Supplier`:
 ```java
 String result = pol.exec(backendService::doSomething);
 ```
 #### 1.2.3 How to Use Asynchronous
-Then use your `CachePolicy` to execute a `Supplier` with retries:
+Then use your `CachePolicy` to execute a `Supplier`:
 ```java
 CompletableFuture<String> result = pol.runAsync(backendService::doSomething);
 ```
