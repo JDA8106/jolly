@@ -169,7 +169,7 @@ The code below builds a `CachePolicy` with a given function
 CachePolicy pol = new CachePolicy(function)
 ```
 `CachePolicy` constructor does not have further parameters that users can specify, except the function of type `Supplier<V>`.
-```
+
 #### 1.2.2 How to Use Synchronous
 Then use your `CachePolicy` to execute a `Supplier` with retries:
 ```java
