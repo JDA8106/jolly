@@ -35,9 +35,12 @@ public class CachePolicy<K, V> {
      * @param cacheKey input of function
      * @return Output of function for particular input
      */
-    public V getResult(K cacheKey) {
-        return cachedFunction.apply(cacheKey);
+    public V exec(Supplier<K> function) {
+        return cachedFunction.apply(function.get());
     }
 
+    public CompletableFuture<V> runAsync(Supplier<K> function) {
+        return CompletableFuture.supplyAsync(() -> exec(function));
+    }
 
 }
