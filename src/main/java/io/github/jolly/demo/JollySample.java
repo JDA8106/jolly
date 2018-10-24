@@ -2,6 +2,8 @@ package io.github.jolly.demo;
 
 import io.github.jolly.circuitbreaker.CircuitBreakerPolicy;
 import io.github.jolly.circuitbreaker.CircuitBreakerPolicyBuilder;
+import io.github.jolly.fallback.FallbackPolicy;
+import io.github.jolly.fallback.FallbackPolicyBuilder;
 import io.github.jolly.timeout.TimeoutPolicy;
 import io.github.jolly.timeout.TimeoutPolicyBuilder;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerOpenException;
@@ -13,7 +15,9 @@ public class JollySample {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
         //testCircuitBreaker();
-        testTimeout();
+//        testTimeout();
+        testFallback();
+
 
     }
 
@@ -60,5 +64,15 @@ public class JollySample {
 
         result = pol.exec(backendService::doSomething);
         System.out.println(result);
+    }
+
+    public static void testFallback() {
+        BackendService backendService = new CounterService();
+
+        FallbackPolicy pol = new FallbackPolicyBuilder().build();
+
+        String result = pol.exec(backendService::runtimeExceptionFail);
+        System.out.println("Sync: " + result);
+
     }
 }

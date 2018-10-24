@@ -38,4 +38,8 @@ public class CounterService implements BackendService {
     public String alwaysWork() {
         return "Hello";
     }
+
+    public String runtimeExceptionFail() {
+        throw new RuntimeException("this command always fails");
+    }
 }

@@ -8,6 +8,10 @@ import java.time.Duration;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
 
+/**
+ * TimeoutPolicy class
+ * @author Anish Visaria, Geetika Kapoor
+ */
 public class TimeoutPolicy extends Policy {
 
     private int duration;

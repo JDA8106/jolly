@@ -8,6 +8,10 @@ import io.vavr.control.Try;
 import java.time.Duration;
 import java.util.function.Supplier;
 
+/**
+ * TimeoutPolicy class
+ * @author Anish Visaria, Geetika Kapoor
+ */
 public class CircuitBreakerPolicy extends Policy {
     private CircuitBreaker circuitBreaker;
     private int duration;

@@ -5,4 +5,5 @@ public interface BackendService {
     String failForever();
     String goForever();
     String alwaysWork();
+    String runtimeExceptionFail();
 }
