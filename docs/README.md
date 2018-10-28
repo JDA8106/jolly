@@ -184,3 +184,38 @@ Later on, you can get the result of the `CachePolicy` as follows:
 ```java
 String actualResult = result.get()
 ```
+
+
+Fallback Pattern
+---
+### 1.1 How Fallback Works
+`FallbackPolicy` provides a substitute return value or alternative action in event of a failure. In the case that fault-tolerance still could not handle an error, `FallbackPolicy` allows the user to smoothly acknowledge failure and respond accordingly. As the name suggests, Fallback is analogous to a fallback plan, or plan B. 
+
+#### 1.1.1 How Synchronous Works
+When .exec() method is executed through the policy:
+1. 
+2. 
+3. 
+
+### 1.2 Fallback Usage
+#### 1.2.1 How to Build
+The code below builds a `FallbackPolicy` with a given function
+```java
+
+```
+
+
+#### 1.2.2 How to Use Synchronous
+Then use your `FallbackPolicy` to execute a `Supplier`:
+```java
+String result = pol.exec(backendService::doSomething);
+```
+#### 1.2.3 How to Use Asynchronous
+Then use your `FallbackPolicy` to execute a `Supplier`:
+```java
+CompletableFuture<String> result = pol.runAsync(backendService::doSomething);
+```
+Later on, you can get the result of the `FallbackPolicy` as follows:
+```java
+String actualResult = result.get()
+```
