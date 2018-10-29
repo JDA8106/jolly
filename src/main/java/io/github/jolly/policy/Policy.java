@@ -8,15 +8,14 @@ import java.util.function.Supplier;
  */
 public abstract class Policy {
 
-    public abstract <T> T exec(Supplier<T> function);
+    public abstract <K, V> V exec(Supplier<K> function);
 
     /**
      * Executes method asynchronously with given parameters
      * @param function function to be executed with the Policy
-     * @param <T>
      * @return CompletableFuture of output of method on success or exception on failure
      */
-    public <T> CompletableFuture<T> runAsync(Supplier<T> function) {
+    public <K, V> CompletableFuture<V> runAsync(Supplier<K> function) {
         return CompletableFuture.supplyAsync(() -> exec(function));
     }
 }
