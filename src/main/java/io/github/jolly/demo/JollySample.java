@@ -15,8 +15,10 @@ public class JollySample {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
         //testCircuitBreaker();
-//        testTimeout();
-        testFallback();
+        //testTimeout();
+        testFallbackWithBadFallbackFunction();
+        testFallbackWithGoodFallbackFunction();
+
 
 
     }
@@ -66,13 +68,29 @@ public class JollySample {
         System.out.println(result);
     }
 
-    public static void testFallback() {
+    public static void testFallbackWithBadFallbackFunction() {
+        // This sample is the case when the user supplied function to be executed has an exception,
+        // and the user supplied fallback function ALSO has an exception, in which case,
+        // the policy indicates that there is an "Exception in user supplied fallback function, calling default fallback function"
+        // and it resorts to calling its default fallback function
+
         BackendService backendService = new CounterService();
 
-        FallbackPolicy pol = new FallbackPolicyBuilder().build();
+        FallbackPolicy pol = new FallbackPolicyBuilder(backendService::runtimeExceptionFail).build();
 
         String result = pol.exec(backendService::runtimeExceptionFail);
         System.out.println("Sync: " + result);
+    }
 
+    public static void testFallbackWithGoodFallbackFunction() {
+        // This sample is the case when the user supplied function to be executed has an exception,
+        // but the user supplied fallback function does NOT have an exception
+
+        BackendService backendService = new CounterService();
+
+        FallbackPolicy pol = new FallbackPolicyBuilder(backendService::alwaysWork).build();
+
+        String result = pol.exec(backendService::runtimeExceptionFail);
+        System.out.println("Sync: " + result);
     }
 }

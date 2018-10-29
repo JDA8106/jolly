@@ -4,6 +4,7 @@ import io.github.jolly.policy.Policy;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.vavr.control.Try;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -13,11 +14,12 @@ import java.util.function.Supplier;
  */
 public class FallbackPolicy extends Policy {
 
+    private Callable userFallback;
     /**
      * Initializes FallbackPolicy
      */
-    public FallbackPolicy() {
-
+    public FallbackPolicy(Callable userFallback) {
+        this.userFallback = userFallback;
     }
 
     /**
@@ -27,7 +29,7 @@ public class FallbackPolicy extends Policy {
      */
     private String fallback(Exception exception) {
         // Handle exception and invoke fallback
-        return "Fallback works!";
+        return "Default Fallback Function Called";
     }
 
     /**
@@ -48,7 +50,19 @@ public class FallbackPolicy extends Policy {
             return result;
         } catch (Exception error) {
             error.printStackTrace();
-            return (T) fallback(error);
+            if (this.userFallback != null) {
+                try {
+                    return (T) userFallback.call();
+                }
+                catch (Exception e) {
+                    // If user supplied fallback function also has an exception
+                    System.out.println("Exception in user supplied fallback function, calling default fallback function");
+                    return (T) fallback(error);
+                }
+            }
+            else {
+                return (T) fallback(error);
+            }
         }
     }
 
