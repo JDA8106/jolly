@@ -52,9 +52,9 @@ String actualResult = result.get()
 
 Circuit-breaker Pattern
 ---
-### 1.1 How Circuit-breaker Works
+### 2.1 How Circuit-breaker Works
 Circuit-breaker is a state machine of three states: open, closed, half-open. 
-#### 1.1.1 How Synchronous Works
+#### 2.1.1 How Synchronous Works
 1. The circuit initially starts closed. When closed, the circuit-breaker executes methods placed through it, measuring the faults and successes.
    - If the failures exceed a certain `sizeRingBufferClosed`, 2 times by default (user configurable), the circuit will transition to open state.
    - NOTE: the libary has a `rateThreshold`, 100% by default (user configurable), which is the failure rate threshold in percentage above which the CircuitBreaker should trip open and start short circuiting calls
@@ -68,14 +68,14 @@ Circuit-breaker is a state machine of three states: open, closed, half-open.
       2. if this call throws a exception, the circuit transitions back to open, and remains open again for `duration`.
       3. if the call succeeds, the circuit transitions back to closed.
 
-#### 1.1.2 How Asynchronous Works
+#### 2.1.2 How Asynchronous Works
 When a method is executed through the policy:
 1. The `CircuitBreakerPolicy` attempts the method passed in with .runAsync().
    - A Java future is returned that will contain the return value once the policy exits
    - The policy will execute the same way as synchronous (refer to 1.1.1)
 
-### 1.2 Circuit-breaker Usage
-#### 1.2.1 How to Build
+### 2.2 Circuit-breaker Usage
+#### 2.2.1 How to Build
 The code below builds a `CircuitBreakerPolicy` with `rateThreshold` 100%, a wait `duration` of 1000 ms, and ring buffer size of 2 for both half-open and closed states. 
 ```java
 CircuitBreakerPolicy pol = new CircuitBreakerPolicyBuilder().build();
@@ -89,12 +89,12 @@ CircuitBreakerPolicy pol = new CircuitBreakerPolicyBuilder()
                           .sizeRingBufferClosed(1)
                           .build();
 ```
-#### 1.2.2 How to Use Synchronous
+#### 2.2.2 How to Use Synchronous
 Then use your `CircuitBreakerPolicy` to execute a `Supplier` with retries:
 ```java
 String result = pol.exec(backendService::doSomething);
 ```
-#### 1.2.3 How to Use Asynchronous
+#### 2.2.3 How to Use Asynchronous
 Then use your `CircuitBreakerPolicy` to execute a `Supplier` with retries:
 ```java
 CompletableFuture<String> result = pol.runAsync(backendService::doSomething);
@@ -106,8 +106,8 @@ String actualResult = result.get()
 
 Timeout Pattern
 ---
-### 1.1 How Timeout Works
-#### 1.1.1 How Synchronous Works
+### 3.1 How Timeout Works
+#### 3.1.1 How Synchronous Works
 When a method is executed through the policy:
 1. The `TimeoutPolicy` attempts the method passed in with .exec().
    - If the method executes within the configured time, the return value (if relevant) is returned and the policy exits.
@@ -115,14 +115,14 @@ When a method is executed through the policy:
      1. the TimeoutPolicy throws an exception
      2. the TimeoutPolicy attempts to cancel the supplied future (user configurable)
 
-#### 1.1.2 How Asynchronous Works
+#### 3.1.2 How Asynchronous Works
 When a method is executed through the policy:
 1. The `TimeoutPolicy` attempts the method passed in with .runAsync().
    - A Java future is returned that will contain the return value once the policy exits
    - The policy will execute the same way as synchronous (refer to 1.1.1)
 
-### 1.2 Timeout Usage
-#### 1.2.1 How to Build
+### 3.2 Timeout Usage
+#### 3.2.1 How to Build
 The code below builds a `TimeoutPolicy` with a time duration of 1 second and a ‘yes’ to attempting to cancel the future in case it an exception occurs
 ```java
 TimeoutPolicy pol = new TimeoutPolicyBuilder().build();
@@ -134,12 +134,12 @@ TimeoutPolicy pol = new TimeoutPolicyBuilder()
                 .cancelFuture(false)
                 .build();
 ```
-#### 1.2.2 How to Use Synchronous
+#### 3.2.2 How to Use Synchronous
 Then use your `TimeoutPolicy` to execute a `Supplier` with retries:
 ```java
 String result = pol.exec(backendService::doSomething);
 ```
-#### 1.2.3 How to Use Asynchronous
+#### 3.2.3 How to Use Asynchronous
 Then use your `TimeoutPolicy` to execute a `Supplier` with retries:
 ```java
 CompletableFuture<String> result = pol.runAsync(backendService::doSomething);
@@ -152,30 +152,30 @@ String actualResult = result.get()
 
 Cache Pattern
 ---
-### 1.1 How Cache Works
+### 4.1 How Cache Works
 `CachePolicy` is an implementation of the cache-aside pattern. It provides results from the cache or a user specified function.
 `CachePolicy` uses Java's CacheManager to establish, configure and close Caches.
 
-#### 1.1.1 How Synchronous Works
+#### 4.1.1 How Synchronous Works
 When .exec() method is executed through the policy:
 1. `CachePolicy` takes in a `cacheKey` through the method parameter.
 2. `CachePolicy` fetches result from a previously cached function specified by the user during initialization of the `CachePolicy`
 3. If the cache retrieval fails because of a cache miss or an error, `CachePolicy` handles the exception.
 
-### 1.2 Cache Usage
-#### 1.2.1 How to Build
+### 4.2 Cache Usage
+#### 4.2.1 How to Build
 The code below builds a `CachePolicy` with a given function
 ```java
 CachePolicy pol = new CachePolicy(function)
 ```
 `CachePolicy` constructor does not have further parameters that users can specify, except the function of type `Supplier<V>`.
 
-#### 1.2.2 How to Use Synchronous
+#### 4.2.2 How to Use Synchronous
 Then use your `CachePolicy` to execute a `Supplier`:
 ```java
 String result = pol.exec(backendService::doSomething);
 ```
-#### 1.2.3 How to Use Asynchronous
+#### 4.2.3 How to Use Asynchronous
 Then use your `CachePolicy` to execute a `Supplier`:
 ```java
 CompletableFuture<String> result = pol.runAsync(backendService::doSomething);
@@ -188,29 +188,41 @@ String actualResult = result.get()
 
 Fallback Pattern
 ---
-### 1.1 How Fallback Works
+### 5.1 How Fallback Works
 `FallbackPolicy` provides a substitute return value or alternative action in event of a failure. In the case that fault-tolerance still could not handle an error, `FallbackPolicy` allows the user to smoothly acknowledge failure and respond accordingly. As the name suggests, Fallback is analogous to a fallback plan, or plan B. 
 
-#### 1.1.1 How Synchronous Works
-When .exec() method is executed through the policy:
-1. 
-2. 
-3. 
+#### 5.1.1 How Synchronous Works
+When a method is executed through the policy:
+1. The `FallbackPolicy` attempts the method passed in with .exec(), the user may also pass in a function to "fallback" on.
+   - If the method executes successfully, the return value (if relevant) is returned and the policy exits.
+   - If the method throws an exception, it:
+     1. If user passed in a backup method, `FallbackPolicy` will attempt this backup function. 
+         -If backup executes successfully, the return value (if relevant) is returned and the policy exits.
+         -If backup fails, `FallbackPolicy` runs the default. 
+     2. If user did not pass in a backup method, 'FallbackPolicy` uses the default, which tells the user there has been an exception and gracefully exits.
 
-### 1.2 Fallback Usage
-#### 1.2.1 How to Build
+#### 5.1.2 How Asychronous Works
+???????
+
+### 5.2 Fallback Usage
+#### 5.2.1 How to Build
 The code below builds a `FallbackPolicy` with a given function
 ```java
-
+FallbackPolicy pol = new FallbackPolicyBuilder().build();
+```
+The user may choose to pass in a `Supplier<T>` function to use as the method to fall back on. 
+```java
+FallbackPolicy pol = new FallbackPolicyBuilder()
+                .userFallback(function)
+                .build();
 ```
 
-
-#### 1.2.2 How to Use Synchronous
+#### 5.2.2 How to Use Synchronous
 Then use your `FallbackPolicy` to execute a `Supplier`:
 ```java
 String result = pol.exec(backendService::doSomething);
 ```
-#### 1.2.3 How to Use Asynchronous
+#### 5.2.3 How to Use Asynchronous
 Then use your `FallbackPolicy` to execute a `Supplier`:
 ```java
 CompletableFuture<String> result = pol.runAsync(backendService::doSomething);
