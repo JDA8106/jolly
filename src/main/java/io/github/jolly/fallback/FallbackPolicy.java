@@ -14,11 +14,11 @@ import java.util.function.Supplier;
  */
 public class FallbackPolicy extends Policy {
 
-    private Callable userFallback;
+    private Supplier<T> userFallback;
     /**
      * Initializes FallbackPolicy
      */
-    public FallbackPolicy(Callable userFallback) {
+    public FallbackPolicy(Supplier<T> userFallback) {
         this.userFallback = userFallback;
     }
 
