@@ -197,7 +197,9 @@ When a method is executed through the policy:
    - If the method executes successfully, the return value (if relevant) is returned and the policy exits.
    - If the method throws an exception, it:
      1. If user passed in a backup method, `FallbackPolicy` will attempt this backup function. 
+     
          -If backup executes successfully, the return value (if relevant) is returned and the policy exits.
+         
          -If backup fails, `FallbackPolicy` runs the default. 
      2. If user did not pass in a backup method, 'FallbackPolicy` uses the default, which tells the user there has been an exception and gracefully exits.
 
