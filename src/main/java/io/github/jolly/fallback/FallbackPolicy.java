@@ -14,11 +14,11 @@ import java.util.function.Supplier;
  */
 public class FallbackPolicy extends Policy {
 
-    private Supplier<T> userFallback;
+    private Supplier userFallback;
     /**
      * Initializes FallbackPolicy
      */
-    public FallbackPolicy(Supplier<T> userFallback) {
+    public FallbackPolicy(Supplier userFallback) {
         this.userFallback = userFallback;
     }
 
@@ -52,7 +52,7 @@ public class FallbackPolicy extends Policy {
             error.printStackTrace();
             if (this.userFallback != null) {
                 try {
-                    return (T) userFallback.call();
+                    return (T) userFallback.get();
                 }
                 catch (Exception e) {
                     // If user supplied fallback function also has an exception

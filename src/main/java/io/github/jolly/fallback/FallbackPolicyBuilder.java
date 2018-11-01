@@ -1,15 +1,16 @@
 package io.github.jolly.fallback;
 
-import java.util.concurrent.Supplier;
+import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 public class FallbackPolicyBuilder {
 
-    private Supplier<T> userFallback;
+    private Supplier userFallback;
 
     /**
      * Initializes FallbackPolicyBuilder
      */
-    public FallbackPolicyBuilder(Supplier<T> userFallback) {
+    public FallbackPolicyBuilder(Supplier userFallback) {
         this.userFallback = userFallback;
     }
 
