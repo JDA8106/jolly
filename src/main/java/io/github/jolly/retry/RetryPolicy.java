@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  * @author Anish Visaria
  *
  */
-public class RetryPolicy extends Policy {
+public class RetryPolicy<T> extends Policy<T> {
     private int attempts;
     private int duration;
 
@@ -34,10 +34,9 @@ public class RetryPolicy extends Policy {
     /**
      * Executes method with the given parameters (attempts, duration)
      * @param function function to be executed with the RetryPolicy
-     * @param <T>
      * @return output of method on success or exception on failure
      */
-    public <T> T exec(Supplier<T> function) {
+    public T exec(Supplier<T> function) {
         CircuitBreaker circuitBreaker = CircuitBreaker.ofDefaults("default");
 
         RetryConfig config = RetryConfig.custom()

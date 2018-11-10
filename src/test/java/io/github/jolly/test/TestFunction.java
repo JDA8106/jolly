@@ -30,7 +30,7 @@ class TestFunction {
      * its construction or a Runtime error, based on the sequence.
      * @return elapsed time from construction
      */
-    long func() {
+    Long func() {
         try {
             TimeUnit.MILLISECONDS.sleep(delay);
         } catch (InterruptedException e) {

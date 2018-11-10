@@ -12,7 +12,7 @@ import java.util.function.Supplier;
  * TimeoutPolicy class
  * @author Anish Visaria, Geetika Kapoor
  */
-public class TimeoutPolicy extends Policy {
+public class TimeoutPolicy<T> extends Policy<T> {
 
     private int duration;
     private boolean cancelFuture;
@@ -37,10 +37,9 @@ public class TimeoutPolicy extends Policy {
     /**
      * Executes method with the given parameters duration and cancelFuture
      * @param function function to be executed with the TimeoutPolicy
-     * @param <T>
      * @return output of method on success or exception on failure
      */
-    public <T> T exec(Supplier<T> function) {
+    public T exec(Supplier<T> function) {
 
         TimeLimiterConfig config = TimeLimiterConfig.custom()
                 .timeoutDuration(Duration.ofMillis(duration))
@@ -51,20 +50,19 @@ public class TimeoutPolicy extends Policy {
 
         Supplier<CompletableFuture<T>> futureSupplier = () -> CompletableFuture.supplyAsync(() -> function.get());
 
-        Callable restrictedCall = TimeLimiter
+        Callable<T> restrictedCall = TimeLimiter
                 .decorateFutureSupplier(timeLimiter, futureSupplier);
 
         try {
-            T res = (T) restrictedCall.call();
+            T res = restrictedCall.call();
             return res;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-
-        return null;
     }
 
-    public <T> CompletableFuture<T> runAsync(Supplier<T> function) {
+    public CompletableFuture<T> runAsync(Supplier<T> function) {
         return supplyAsync(() -> exec(function), this.duration, TimeUnit.MILLISECONDS, null);
     }
 
@@ -72,7 +70,7 @@ public class TimeoutPolicy extends Policy {
             final Supplier<T> supplier, long timeoutValue, TimeUnit timeUnit,
             T defaultValue) {
 
-        final CompletableFuture<T> cf = new CompletableFuture<>();
+        final CompletableFuture<T> cf = new CompletableFuture<T>();
 
         Future<?> future = executorService.submit(() -> {
             try {

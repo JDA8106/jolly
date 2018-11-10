@@ -1,5 +1,6 @@
 package io.github.jolly.cache;
 
+import io.github.jolly.policy.SuperPolicy;
 import io.github.resilience4j.cache.Cache;
 
 import java.util.concurrent.CompletableFuture;
@@ -15,7 +16,7 @@ import java.util.function.Supplier;
  * @param <V> Output of Cached Function
  *
  */
-public class CachePolicy<K, V> {
+public class CachePolicy<K, V> extends SuperPolicy<K, V> {
 
     private Cache<K, V> cacheContext;
     private Function<K, V> cachedFunction;
@@ -30,7 +31,6 @@ public class CachePolicy<K, V> {
         cachedFunction = Cache.decorateSupplier(cacheContext, function);
     }
 
-
     /**
      * Fetches result from cache or from the function, if unavailable.
      * @param function input of function
@@ -39,9 +39,4 @@ public class CachePolicy<K, V> {
     public V exec(Supplier<K> function) {
         return cachedFunction.apply(function.get());
     }
-
-    public CompletableFuture<V> runAsync(Supplier<K> function) {
-        return CompletableFuture.supplyAsync(() -> exec(function));
-    }
-
 }

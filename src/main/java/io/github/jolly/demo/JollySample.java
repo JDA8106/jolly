@@ -14,18 +14,15 @@ import java.util.concurrent.ExecutionException;
 public class JollySample {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
-        //testCircuitBreaker();
-        //testTimeout();
+        testCircuitBreaker();
+        testTimeout();
         testFallbackWithBadFallbackFunction();
         testFallbackWithGoodFallbackFunction();
-
-
-
     }
 
     public static void testTimeout() throws ExecutionException, InterruptedException {
         BackendService backendService = new CounterService();
-        TimeoutPolicy pol = new TimeoutPolicyBuilder().build();
+        TimeoutPolicy<String> pol = new TimeoutPolicyBuilder<String>().build();
 
         CompletableFuture<String> resFuture = pol.runAsync(backendService::goForever);
 
@@ -33,12 +30,11 @@ public class JollySample {
         System.out.println("Sync: " + result);
 
         System.out.println("Async: " + resFuture.get());
-
     }
 
     public static void testCircuitBreaker() throws InterruptedException {
         BackendService backendService = new CounterService();
-        CircuitBreakerPolicy pol = new CircuitBreakerPolicyBuilder().build();
+        CircuitBreakerPolicy<String> pol = new CircuitBreakerPolicyBuilder<String>().build();
         try {
             String result = pol.exec(backendService::doSomething);
             System.out.println(result);
@@ -76,7 +72,7 @@ public class JollySample {
 
         BackendService backendService = new CounterService();
 
-        FallbackPolicy pol = new FallbackPolicyBuilder(backendService::runtimeExceptionFail).build();
+        FallbackPolicy<String> pol = new FallbackPolicyBuilder<String>(backendService::runtimeExceptionFail).build();
 
         String result = pol.exec(backendService::runtimeExceptionFail);
         System.out.println("Sync: " + result);
@@ -88,7 +84,7 @@ public class JollySample {
 
         BackendService backendService = new CounterService();
 
-        FallbackPolicy pol = new FallbackPolicyBuilder(backendService::alwaysWork).build();
+        FallbackPolicy<String> pol = new FallbackPolicyBuilder<String>(backendService::alwaysWork).build();
 
         String result = pol.exec(backendService::runtimeExceptionFail);
         System.out.println("Sync: " + result);

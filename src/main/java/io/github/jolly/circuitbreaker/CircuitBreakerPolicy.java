@@ -12,7 +12,7 @@ import java.util.function.Supplier;
  * TimeoutPolicy class
  * @author Anish Visaria, Geetika Kapoor
  */
-public class CircuitBreakerPolicy extends Policy {
+public class CircuitBreakerPolicy<T> extends Policy<T> {
     private CircuitBreaker circuitBreaker;
     private int duration;
 
@@ -41,10 +41,9 @@ public class CircuitBreakerPolicy extends Policy {
     /**
      * Executes method with the given parameters rateThreshold, duration, sizeRingBufferHalfOpen, sizeRingBufferClosed)
      * @param function function to be executed with the CircuitBreakerPolicy
-     * @param <T>
      * @return output of method on success or exception on failure
      */
-    public <T> T exec(Supplier<T> function) {
+    public T exec(Supplier<T> function) {
         Supplier<T> decoratedSupplier = CircuitBreaker.decorateSupplier(this.circuitBreaker, function);
 
         System.out.println(circuitBreaker.getState());

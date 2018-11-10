@@ -1,6 +1,6 @@
 package io.github.jolly.circuitbreaker;
 
-public class CircuitBreakerPolicyBuilder {
+public class CircuitBreakerPolicyBuilder<T> {
 
 /**
  * The CircuitBreakerPolicyBuilder class generates a CircuitBreakerPolicy to be reused
@@ -56,7 +56,7 @@ public class CircuitBreakerPolicyBuilder {
      * Builds and returns CircuitBreakerPolicy with requested parameters.
      * @return CircuitBreakerPolicy with config parameters
      */
-    public CircuitBreakerPolicy build() {
-        return new CircuitBreakerPolicy(rateThreshold, duration, sizeRingBufferHalfOpen, sizeRingBufferClosed);
+    public CircuitBreakerPolicy<T> build() {
+        return new CircuitBreakerPolicy<T>(rateThreshold, duration, sizeRingBufferHalfOpen, sizeRingBufferClosed);
     }
 }

@@ -3,14 +3,14 @@ package io.github.jolly.fallback;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
-public class FallbackPolicyBuilder {
+public class FallbackPolicyBuilder<T> {
 
-    private Supplier userFallback;
+    private Supplier<T> userFallback;
 
     /**
      * Initializes FallbackPolicyBuilder
      */
-    public FallbackPolicyBuilder(Supplier userFallback) {
+    public FallbackPolicyBuilder(Supplier<T> userFallback) {
         this.userFallback = userFallback;
     }
 
@@ -18,8 +18,8 @@ public class FallbackPolicyBuilder {
      * Builds and returns FallbackPolicy
      * @return FallbackPolicy
      */
-    public FallbackPolicy build() {
+    public FallbackPolicy<T> build() {
 
-        return new FallbackPolicy(userFallback);
+        return new FallbackPolicy<T>(userFallback);
     }
 }

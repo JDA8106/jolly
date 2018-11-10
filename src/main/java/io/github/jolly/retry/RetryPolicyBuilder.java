@@ -4,7 +4,7 @@ package io.github.jolly.retry;
  * The RetryPolicyBuilder class generates a RetryPolicy to be reused
  * for method invocation with a retry policy.
  */
-public class RetryPolicyBuilder {
+public class RetryPolicyBuilder<T> {
     private int attempts = 3;
     private int duration = 500;
 
@@ -32,7 +32,7 @@ public class RetryPolicyBuilder {
      * Builds and returns RetryPolicy with requested paramters.
      * @return RetryPolicy with config parameters
      */
-    public RetryPolicy build() {
-        return new RetryPolicy(attempts, duration);
+    public RetryPolicy<T> build() {
+        return new RetryPolicy<T>(attempts, duration);
     }
 }

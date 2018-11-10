@@ -4,7 +4,7 @@ package io.github.jolly.timeout;
  * The TimeoutPolicyBuilder class generates a TimeoutPolicy to be reused
  * for method invocation with a TimeoutPolicy.
  */
-public class TimeoutPolicyBuilder {
+public class TimeoutPolicyBuilder<T> {
 
     private int duration = 5000;
     private boolean cancelFuture = false;
@@ -33,7 +33,7 @@ public class TimeoutPolicyBuilder {
      * Builds and returns CircuitBreakerPolicy with requested parameters.
      * @return CircuitBreakerPolicy with config parameters
      */
-    public TimeoutPolicy build() {
-        return new TimeoutPolicy(duration, cancelFuture);
+    public TimeoutPolicy<T> build() {
+        return new TimeoutPolicy<T>(duration, cancelFuture);
     }
 }

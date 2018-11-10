@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 public class RetryPolicyTest {
     private static final int ATTEMPTS = 3;
     private static final int WAIT_DURATION = 10;
-    private static final RetryPolicy policy = new RetryPolicyBuilder().attempts(ATTEMPTS).waitDuration(WAIT_DURATION).build();
+    private static final RetryPolicy<Long> policy = new RetryPolicyBuilder<Long>().attempts(ATTEMPTS).waitDuration(WAIT_DURATION).build();
 
     @Test
     public void SyncSucceedImmediately() {
