@@ -72,7 +72,7 @@ Circuit-breaker is a state machine of three states: open, closed, half-open.
 When a method is executed through the policy:
 1. The `CircuitBreakerPolicy` attempts the method passed in with .runAsync().
    - A Java future is returned that will contain the return value once the policy exits
-   - The policy will execute the same way as synchronous (refer to 1.1.1)
+   - The policy will execute the same way as synchronous (refer to 2.1.1)
 
 ### 2.2 Circuit-breaker Usage
 #### 2.2.1 How to Build
@@ -119,7 +119,7 @@ When a method is executed through the policy:
 When a method is executed through the policy:
 1. The `TimeoutPolicy` attempts the method passed in with .runAsync().
    - A Java future is returned that will contain the return value once the policy exits
-   - The policy will execute the same way as synchronous (refer to 1.1.1)
+   - The policy will execute the same way as synchronous (refer to 3.1.1)
 
 ### 3.2 Timeout Usage
 #### 3.2.1 How to Build
@@ -204,7 +204,10 @@ When a method is executed through the policy:
      2. If user did not pass in a backup method, 'FallbackPolicy` uses the default, which tells the user there has been an exception and gracefully exits.
 
 #### 5.1.2 How Asychronous Works
-???????
+When a method is executed through the policy:
+1. The `FallbackPolicy` attempts the method passed in with .runAsync().
+   - A Java future is returned that will contain the return value once the policy exits
+   - The policy will execute the same way as synchronous (refer to 5.1.1)
 
 ### 5.2 Fallback Usage
 #### 5.2.1 How to Build
