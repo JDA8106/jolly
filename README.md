@@ -20,18 +20,22 @@ Jolly is open sourced on GitHub and is licensed under the [MIT License](http://o
 ####Circuit-breaker
   - Synchronous
   - Asynchronous 
+  
 ####Timeout
   - Synchronous
-  - Asynchronous 
+  - Asynchronous
+  
 ####Cache
   - Synchronous
   - Asynchronous 
 ####Fallback
   - Synchronous
   - Asynchronous 
+  
 ####Bulkhead Isolation
   - Synchronous
   - Asynchronous 
+  
 ###Bug Fixes Since Last Release (April 2018):
 ####Adding asynchronous implementation for Retry
 ####Changing Policy super class to accommodate generic types
@@ -40,24 +44,27 @@ Jolly is open sourced on GitHub and is licensed under the [MIT License](http://o
 #####Documentations: Lack navigation features 
 
 ##Install Guide:
-###Pre-requisites:​ 
+###Pre-requisites:
 ####Java 8 SDK
 ####Gradle
 ####Text editor or IDE (we recommend IntelliJ)
-###Dependent Libraries Required:​ 
+###Dependent Libraries Required:
 ####Other dependencies (namely, Resilience4j) will be installed by Gradle
 ###Download Instructions:
 ![Download](https://github.com/JDA8106/jolly/raw/master/Download%20ZIP.png)
 ####Download zip file from GitHub repo
 ####Unzip it
 ####Open the code directory in terminal (use cd linux command)
-###Build instructions (if needed): ​if you are providing the raw source code rather
+###Build instructions (if needed):
+if you are providing the raw source code rather
 than a binary build, how will the customer and users create the required executable
 application?
-###Installation of actual application: ​what steps have to be taken after the software is
+###Installation of actual application: 
+what steps have to be taken after the software is
 built? What directories are required for installation?
-###Run instructions:​ what does the user/customer have to do to get the software to
+###Run instructions:
+what does the user/customer have to do to get the software to
 Execute?
-###Troubleshooting: ​ 
+###Troubleshooting: 
 #####Ensure your Java and Gradle versions are compatible
 #####Ensure proper installation of dependencies
