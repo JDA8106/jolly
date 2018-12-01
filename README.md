@@ -51,8 +51,12 @@ Jolly is open sourced on GitHub and is licensed under the [MIT License](http://o
 - Text editor or IDE (we recommend IntelliJ)
 ### Dependent Libraries Required:
 - Other dependencies (namely, Resilience4j) will be installed by Gradle
-### Download Instructions:
-**Note that downloading the source is only needed for development on the library itself. Skip to `installation` to use the library in application.**
+### Installation into your application:
+To your `build.gradle` file, make the following additions:
+- Add `maven { url "https://jolly.bintray.com/jolly" }` to the `repositories` section.
+- Add `compile { "io.github.jolly:jolly" }` to the `dependencies` section.
+### Download Instructions (from source):
+**Note that downloading the source is only needed for development on the library itself.  Go back to "Installation" to use the library in your application.**
 
 ![Download](https://github.com/JDA8106/jolly/raw/master/Download%20ZIP.png)
 1. Download zip file from GitHub repo
@@ -60,13 +64,8 @@ Jolly is open sourced on GitHub and is licensed under the [MIT License](http://o
 ### Build instructions (from source):
 1. Open the code directory in terminal (use cd linux command)
 2. Run `gradle build`
-### Run instructions:
+### Run instructions (from source):
 To demo the library, run the file `src/main/java/io/github/jolly/demo/JollySample.java`.
-### Installation into your application:
-To your `build.gradle` file, make the following additions:
-- Add `maven { url "https://jolly.bintray.com/jolly" }` to the `repositories` section.
-- Add `compile { "io.github.jolly:jolly" }` to the `dependencies` section.
-
 ### Troubleshooting: 
 - Ensure your Java and Gradle versions are compatible
 - Ensure proper installation of dependencies
