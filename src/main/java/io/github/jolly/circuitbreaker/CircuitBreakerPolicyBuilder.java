@@ -5,6 +5,9 @@ public class CircuitBreakerPolicyBuilder<T> {
 /**
  * The CircuitBreakerPolicyBuilder class generates a CircuitBreakerPolicy to be reused
  * for method invocation with a CircuitBreakerPolicy.
+ *
+ * @author Anish Visaria
+ *
  */
     private int rateThreshold = 100;
     private int duration = 1000;
