@@ -236,3 +236,54 @@ Later on, you can get the result of the `FallbackPolicy` as follows:
 ```java
 String actualResult = result.get()
 ```
+
+
+Bulkhead Isolation Pattern
+---
+### 5.1 How Bulkhead Isolation Works
+A bulkhead is a partition in a ship that isolates different compartments, so that water damage in one does not extend to the other.
+The `Bulkhead Isolation Policy` limits the the number of parallel executions and the time a thread can be blocked for to prevent
+a fault from potentially clogging up resources and causing a cascading failure.
+
+#### 5.1.1 How Synchronous Works
+When a method is executed through the policy:
+1. The `Bulkhead Isolation Policy` attempts the method passed in with .exec(), the user may also pass in the:
+   - max amount of parallel executions allowed by the bulkhead, and
+   - the max amount of time a thread can be blocked.
+
+#### 5.1.2 How Asychronous Works
+When a method is executed through the policy:
+1. The `Bulkhead Isolation Policy` attempts the method passed in with .runAsync().
+   - A Java future is returned that will contain the return value once the policy exits
+   - The policy will execute the same way as synchronous (refer to 5.1.1)
+
+### 5.2 Bulkhead Isolation Policy Usage
+#### 5.2.1 How to Build
+The code below builds a `Bulkhead Isolation Policy` with a given function
+```java
+BulkheadPolicyBuilder pol = new BulkheadPolicyBuilder();
+```
+Optional: The user may choose to set the `maxConcurrentCalls` (example: 150) and `maxWaitTime`(example: 100 ms) attributes.
+```java
+pol.maxConcurrentCalls(150);
+pol.maxWaitTime(100);
+```
+Then, the user can build the BulkheadPolicy using:
+```java
+pol.build();
+```
+
+#### 5.2.2 How to Use Synchronous
+Then use your `BulkheadPolicy` to execute a `Supplier`:
+```java
+String result = pol.exec(backendService::doSomething);
+```
+#### 5.2.3 How to Use Asynchronous
+Then use your `BulkheadPolicy` to execute a `Supplier`:
+```java
+CompletableFuture<String> result = pol.runAsync(backendService::doSomething);
+```
+Later on, you can get the result of the `BulkheadPolicy` as follows:
+```java
+String actualResult = result.get();
+```
