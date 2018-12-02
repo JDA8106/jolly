@@ -14,10 +14,10 @@ import java.util.concurrent.ExecutionException;
 public class JollySample {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
 
-        testCircuitBreaker();
-        testTimeout();
-        testFallbackWithBadFallbackFunction();
-        testFallbackWithGoodFallbackFunction();
+       testTimeout();
+       testFallbackWithGoodFallbackFunction();
+       testFallbackWithBadFallbackFunction();
+       // add test for retry here
     }
 
     public static void testTimeout() throws ExecutionException, InterruptedException {
@@ -27,9 +27,8 @@ public class JollySample {
         CompletableFuture<String> resFuture = pol.runAsync(backendService::goForever);
 
         String result = pol.exec(backendService::alwaysWork);
-        System.out.println("Sync: " + result);
+        System.out.println(result);
 
-        System.out.println("Async: " + resFuture.get());
     }
 
     public static void testCircuitBreaker() throws InterruptedException {
@@ -73,9 +72,12 @@ public class JollySample {
         BackendService backendService = new CounterService();
 
         FallbackPolicy<String> pol = new FallbackPolicyBuilder<String>(backendService::runtimeExceptionFail).build();
+        try {
+            String result = pol.exec(backendService::runtimeExceptionFail);
+        } catch (RuntimeException e) {
+            System.out.println();
+        }
 
-        String result = pol.exec(backendService::runtimeExceptionFail);
-        System.out.println("Sync: " + result);
     }
 
     public static void testFallbackWithGoodFallbackFunction() {
@@ -84,9 +86,9 @@ public class JollySample {
 
         BackendService backendService = new CounterService();
 
-        FallbackPolicy<String> pol = new FallbackPolicyBuilder<String>(backendService::alwaysWork).build();
+        FallbackPolicy<String> pol = new FallbackPolicyBuilder<String>(backendService::fallbackFail).build();
 
         String result = pol.exec(backendService::runtimeExceptionFail);
-        System.out.println("Sync: " + result);
+        System.out.println(result);
     }
 }

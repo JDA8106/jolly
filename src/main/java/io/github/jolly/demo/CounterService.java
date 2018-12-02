@@ -36,10 +36,15 @@ public class CounterService implements BackendService {
     }
 
     public String alwaysWork() {
-        return "Hello";
+        return "This code keeps failing.";
+    }
+
+    public String fallbackFail() {
+        return "The executed code failed. Now running the user-defined fallback code.";
     }
 
     public String runtimeExceptionFail() {
-        throw new RuntimeException("this command always fails");
+        throw new RuntimeException("Code failed due to some error. Let's say this error occurred because the website the user" +
+                "is trying to access is unresponsive.");
     }
 }

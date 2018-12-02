@@ -54,7 +54,7 @@ public class FallbackPolicy<T> extends Policy<T> {
                 }
                 catch (Exception e) {
                     // If user supplied fallback function also has an exception
-                    System.out.println("Exception in user supplied fallback function, calling default fallback function");
+                    System.out.println("Exception (error) in the use-defined fallback code. Now calling the default fallback code.");
                     return fallback(error);
                 }
             }
