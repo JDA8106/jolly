@@ -1,6 +1,7 @@
 # The Jolly Project
 
 ![The Jolly Logo](https://github.com/JDA8106/jolly/raw/master/jolly2.png)
+![The Jolly Team](https://github.com/JDA8106/jolly/raw/master/Contact.png)
 
 ## Jolly, a Fault-Tolerance Library for Java
 
@@ -15,6 +16,7 @@ Our [documentations](https://jda8106.github.io/jolly/)
 Jolly is open sourced on GitHub and is licensed under the [MIT License](http://opensource.org/licenses/MIT).
 
 ## Release Notes:
+![The Jolly Patterns](https://github.com/JDA8106/jolly/raw/master/poster.png)
 ### Software Features for this Release
 #### Retry Asynchronous
 #### Circuit-breaker
